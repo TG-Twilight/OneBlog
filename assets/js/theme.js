@@ -1,8 +1,8 @@
 /**
- * Updated: 2025-03-12
- * Author: ©彼岸临窗 oneblogx.com
+ * Updated: 2025-06-02
+ * Author: ©彼岸临窗 oneblog.net
  *
- * 注释含命名规范，开源不易，如需引用请注明来源:彼岸临窗 https://oneblogx.com。
+ * 注释含命名规范，开源不易，如需引用请注明来源:彼岸临窗 https://oneblog.net。
  * 本主题已取得软件著作权（登记号：2025SR0334142）和外观设计专利（专利号：第7121519号），请严格遵循GPL-2.0协议使用本主题。
  */
  
@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function () {
         { id: 'base', label: '基础设置', selector: '[id*="logo"],[id*="logoLight"],[id*="logowhite"],[id*="logoX"],[id*="slogan"],[id*="MenuSet"],[id*="Favicon"],[id*="switch"],[id*="Banner"],[id*="Menu"],[id*="NoPostIMG"],[id*="Webthumb"],[id*="Webtime"],[id*="Tongji"],[id*="ICP"],[id*="WA"]'},
         { id: 'pro', label: '高级设置', selector: '[id*="dnsPrefetch"],[id*="imgSmall"],[id*="BeCode"],[id*="F12"],[id*="RightClick"],[id*="Copy"],[id*="RandomIMG"],[id*="Unsplash_API"],[id*="Unsplash"],[id*="Unsplash_User"],[id*="Unsplash_Cat"]' },
         { id: 'social', label: '社交按钮', selector: '[id*="Xiaohongshu"],[id*="Weixin"],[id*="Email"],[id*="Github"]' },
-        
+        { id: 'DIY', label: '样式定制', selector: '[id*="DIYcss"],[id*="themeColor"]' },
     ];
     
     const form = document.querySelector('form'); 

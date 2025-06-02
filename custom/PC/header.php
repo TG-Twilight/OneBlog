@@ -4,7 +4,7 @@
 <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0, width=device-width"/>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <link rel="dns-prefetch" href="https://at.alicdn.com">
-<link rel="dns-prefetch" href="https://cravatar.cn">
+<link rel="dns-prefetch" href="https://weavatar.com">
 <link rel="dns-prefetch" href="https://images.unsplash.com">
 <?php if (!empty($this->options->dnsPrefetch)):
 $domains = array_filter(array_map('trim', explode("\n", $this->options->dnsPrefetch)));
@@ -30,20 +30,21 @@ foreach ($domains as $domain): ?>
 <link href="<?php $this->options->themeUrl('/assets/sdk/animate.compat.css'); ?>" rel="stylesheet"><!--动画效果-->
 <link href="//at.alicdn.com/t/c/font_3940454_u9s3lgsdiq.css" rel="stylesheet"/><!---图标库 iconfont.cn -->
 <link rel="stylesheet" href="<?php $this->options->themeUrl('/assets/sdk/fancybox3/jquery.fancybox.min.css'); ?>" /><!--灯箱效果-->
-<link href="<?php $this->options->themeUrl('/assets/css/PC.css?v=3.5.2'); ?>" rel="stylesheet"/><!--主题核心样式-->
+<link href="<?php $this->options->themeUrl('/assets/css/PC.css?v=3.5.3'); ?>" rel="stylesheet"/><!--主题核心样式-->
+<style>
+:root {
+    --theme-color: <?php $color = $this->options->themeColor;echo $color ? $color : '#ff5050';?>;
+}
+<?php echo $this->options->DIYcss;?>
+</style>
 <!--各页面OG信息及SEO优化-->
 <?php $NoPostIMG = $this->options->NoPostIMG ? $this->options->NoPostIMG : Helper::options()->themeUrl . '/assets/default/bg.jpg';
-$Webthumb = $this->options->Webthumb ? $this->options->Webthumb : Helper::options()->themeUrl . '/assets/default/oneblogx.webp';
-$image_width = 1280; 
-$image_height = 720; ?>
-<!--通用声明-->
-<meta property="og:image:width" content="<?= $image_width ?>">
-<meta property="og:image:height" content="<?= $image_height ?>">
+$Webthumb = $this->options->Webthumb ? $this->options->Webthumb : Helper::options()->themeUrl . '/assets/default/logo.png';
+?>
 <!--首页-->
 <?php if ($this->is('index')): ?>
 <meta property="og:description" content="<?php echo $this->options->description(); ?>" />
 <meta property="og:image" content="<?php echo $Webthumb; ?>" />
-<meta property="og:image:type" content="image/webp">
 <meta name="image" content="<?php echo $Webthumb; ?>">
 <link rel="apple-touch-icon-precomposed" href="<?php echo $Webthumb; ?>">
 <meta name="msapplication-TileImage" content="<?php echo $Webthumb; ?>">

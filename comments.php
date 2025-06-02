@@ -1,4 +1,3 @@
-<!--评论部分的代码是通用的-->
 <div class="padding" id="comments">
 <?php $this->comments()->to($comments); ?>
 <!--评论输入框-->
@@ -7,7 +6,11 @@
     <div class="cancel-comment-reply">
     <?php $comments->cancelReply(); ?>
     </div>
-    <h3 class="oneblog" id="response"><?php _e('<i class="iconfont icon-memos"></i>发表留言'); ?></h3>
+    <h3 class="oneblog" id="response">
+        <div id="default-title"><i class="iconfont icon-memos"></i>发表留言</div>
+        <div id="reply-title" style="display:none">回复<div id="reply-target"></div>
+        </div>
+    </h3>
     <form method="post" action="<?php $this->commentUrl() ?>" id="comment-form" role="form">
     <?php if ($this->user->hasLogin()): ?>
     <?php else: ?>
@@ -26,25 +29,26 @@
             </div>
         </div>
     <?php endif; ?>
-        <textarea placeholder="请输入留言内容..." name="text" id="textarea" required ><?php $this->remember('text'); ?></textarea>
-        
-        
-            <div class="comment-submit">
-                <div class="emoji" title="添加表情">
-                    <i id="emoji-btn" class="iconfont icon-emoji"></i>
-                    <div id="emoji-picker" class="emoji-picker" style="display:none;">
-                        <div class="emoji-categories">
-                            <button type="button" class="emoji-category" data-category="emotion">表情</button>
-                            <button type="button" class="emoji-category" data-category="special">特殊</button>
-                            <button type="button" class="emoji-category" data-category="kaomoji">颜文字</button>
-                        </div>
-                        <div class="emoji-container">
-                            <!-- 表情图标会动态加载到这里 -->
-                        </div>
-                    </div>
+    <!-- 隐藏的textarea，实际提交用 -->
+    <textarea name="text" id="textarea" style="display:none;" required></textarea>
+    <!-- 可编辑div，表情预览和输入都在这里 -->
+    <div id="rich-editor" contenteditable="true" class="rich-editor"></div>
+    <div class="comment-submit">
+        <div class="emoji" title="添加表情">
+            <i id="emoji-btn" class="iconfont icon-emoji"></i>
+            <div id="emoji-picker" class="emoji-picker" style="display:none;">
+                <div class="emoji-categories">
+                    <button type="button" class="emoji-category" data-category="emotion">表情</button>
+                    <button type="button" class="emoji-category" data-category="special">特殊</button>
+                    <button type="button" class="emoji-category" data-category="kaomoji">颜文字</button>
                 </div>
-                <button type="submit" class="submit"><?php _e('提交审核'); ?></button>
+                <div class="emoji-container">
+                    <!-- 表情图标会动态加载到这里 -->
+                </div>
             </div>
+        </div>
+        <button type="submit" class="submit"><?php _e('提交审核'); ?></button>
+    </div>
     </form>
 </div>
 <?php endif; ?>
@@ -52,9 +56,21 @@
 <?php if ($comments->have()): ?>
 <div class="line"></div>
 <h3 class="oneblog"><?php $this->commentsNum(_t('<i class="iconfont icon-guestbook"></i>暂无留言'), _t('<i class="iconfont icon-guestbook"></i>读者留言<span>1</span>'), _t('<i class="iconfont icon-guestbook"></i>读者留言<span>%d</span>')); ?></h3>
-<?php function threadedComments($comments, $options) {$commentLevelClass = $comments->levels > 0 ? 'comment-child' : 'comment-parent';?>
-<li class="animated fadeIn <?php echo $commentLevelClass;?>">
-    <div id="<?php $comments->theId(); ?>"><!--回复框跟随 容器必须保留该ID-->
+<?php
+function getParentAuthor($comments) {
+    $parent = $comments->parent;
+    if ($parent) {
+        $db = Typecho_Db::get();
+        $row = $db->fetchRow($db->select()->from('table.comments')->where('coid = ?', $parent));
+        if ($row && isset($row['author'])) {
+            return $row['author'];
+        }
+    }
+    return null;
+}
+function threadedComments($comments, $options) {$commentLevelClass = $comments->levels > 0 ? 'comment-child' : 'comment-parent';?>
+<li class="animated fadeIn depth-<?php echo $comments->levels + 1; ?> <?php echo $commentLevelClass;?>"> <!-- 添加深度类 -->
+    <div id="<?php $comments->theId(); ?>">
     <div class="user">
         <?php $email=$comments->mail; $imgUrl = getGravatar($email);echo '<img class="avatar" src="'.$imgUrl.'">'; ?>
         <div class="user-info">
@@ -67,12 +83,24 @@
             </div>
             <div class="date">
                 <span><?php $comments->date('Y-m-d H:i'); ?></span>
-                <span class="comment-reply"><?php $comments->reply(); ?></span>       
+                <span class="comment-reply" data-author="<?php echo htmlspecialchars($comments->author); ?>">
+                    <?php $comments->reply(); ?>
+                </span>     
             </div>
         </div>
     </div>
     
-    <div class="<?= $comments->status === "waiting" ? 'waiting' : '' ?>"><?= parseEmojis($comments->content); ?></div>
+    <div class="<?= $comments->status === "waiting" ? 'waiting ' : '' ?>comment-box-<?php echo $comments->levels + 1; ?>">
+        <?php
+        if ($comments->levels > 0) {
+            $parentAuthor = getParentAuthor($comments);
+            if ($parentAuthor) {
+                echo '<span class="at-parent">@' . htmlspecialchars($parentAuthor) . '</span> ';
+            }
+        }
+        ?>
+        <?= parseEmojis($comments->content); ?>
+    </div>
     
     <!--子级评论列表-->
     <?php if ($comments->children) { $comments->threadedComments($options);} ?>
@@ -91,4 +119,4 @@
 <?php endif; ?>
     
 <!--评论列表end-->
-</div>
+</div> 

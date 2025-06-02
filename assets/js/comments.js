@@ -1,11 +1,10 @@
 /**
- * Updated: 2025-03-12
- * Author: ©彼岸临窗 oneblogx.com
+ * Updated: 2025-06-02
+ * Author: ©彼岸临窗 oneblog.net
  *
- * 注释含命名规范，开源不易，如需引用请注明来源:彼岸临窗 https://oneblogx.com。
+ * 注释含命名规范，开源不易，如需引用请注明来源:彼岸临窗 https://oneblog.net。
  * 本主题已取得软件著作权（登记号：2025SR0334142）和外观设计专利（专利号：第7121519号），请严格遵循GPL-2.0协议使用本主题。
  */
-
 /** 评论无限加载 **/
 document.addEventListener('DOMContentLoaded', function () {
     var commentList = document.querySelector('.comment-list');
@@ -79,4 +78,25 @@ document.addEventListener('DOMContentLoaded', function () {
         noMoreComments = true;
         noMoreElement.style.display = 'block';
     }
+});
+
+/** 回复时替换表单标题 20250602**/
+document.addEventListener('DOMContentLoaded', function() {
+    var commentList = document.querySelector('.comment-list');
+    if (!commentList) return; // 如果当前页面不存在评论，则不执行该JS
+    // 点击回复时
+    document.querySelectorAll('.comment-reply').forEach(function(replyBtn) {
+        replyBtn.addEventListener('click', function() {
+            const author = this.getAttribute('data-author');
+            document.getElementById('reply-target').textContent = author;
+            document.getElementById('default-title').style.display = 'none';
+            document.getElementById('reply-title').style.display = '';
+        });
+    });
+
+    // 点击取消回复时
+    document.querySelector('.cancel-comment-reply a')?.addEventListener('click', function() {
+        document.getElementById('reply-title').style.display = 'none';
+        document.getElementById('default-title').style.display = '';
+    });
 });

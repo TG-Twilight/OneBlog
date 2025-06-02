@@ -1,9 +1,9 @@
 /**
- * Version: 3.5.2
- * Updated: 2025-03-24
- * Author: ©彼岸临窗 oneblogx.com
+ * Version: 3.5.3
+ * Updated: 2025-06-02
+ * Author: ©彼岸临窗 oneblog.net
  *
- * 注释含命名规范，开源不易，如需引用请注明来源:彼岸临窗 https://oneblogx.com。
+ * 注释含命名规范，开源不易，如需引用请注明来源:彼岸临窗 https://oneblog.net。
  * 本主题已取得软件著作权（登记号：2025SR0334142）和外观设计专利（专利号：第7121519号），请严格遵循GPL-2.0协议使用本主题。
  **/
  
@@ -11,7 +11,6 @@
 :root {
     --background-color: #f7f7f7;
     --color:#161616;
-    --theme-color: #ff5050;/**主题色**/
     --theme-color-light: color-mix(in srgb, var(--theme-color) 70%, white 30%);/**主题色浅色**/
     --black: #121212;/**黑标题色**/
     --black-light: #161616;/**摘要\文章数据\评论者信息色**/
@@ -146,6 +145,24 @@ input:focus-within {
 /**按需左右留白**/
 .padding {
     padding: 0 60px 20px; 
+}
+
+/**主题版权声明**/
+.copyright-info {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    width: fit-content;
+    height: fit-content;
+    padding: 20px;
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 4px;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 
 /**————————全站通用HTML标签——————————————————————————————————————————————————————————————————————————————————————————**/
@@ -321,6 +338,8 @@ th {
 
 td,th {
     padding: 1rem;
+    word-break: break-all;
+    white-space: normal;
     border: 1px solid var(--line-grey);
 }
 
@@ -1001,10 +1020,7 @@ input:-webkit-autofill:active {
 h3.oneblog {
     position: relative;
     font-size: 16px;
-    display: inline-flex;
-    align-items: center;
     letter-spacing: 1px;
-    margin-bottom: 20px;
 }
 
 h3.oneblog i{
@@ -1027,14 +1043,15 @@ h3.oneblog span{
 /**评论输入框通用**/
 .comment-author-info {
     display: flex;
+    flex-wrap: wrap;
+    gap: 2%;
     margin-top: 10px;
     width: 100%;
 }
 
 .comment-md-3{
-    display: inline-grid;
-    width: 32%;
-    margin-right: 2%;
+    flex: 1 0 calc(33.333% - 2%);
+    margin-bottom: 15px;
 }
 
 .comment-md-3:nth-child(3) {
@@ -1055,13 +1072,21 @@ h3.oneblog span{
 }
 
 .comment-md-3 .text {
-    margin-bottom: 20px;
     margin-top: 5px;
     padding: 10px;
     border-radius: 2px;
+    width: 100%;
 }
 
-textarea {
+.depth-2 .comment-md-3 .text {
+    background: var(--line-grey);
+}
+
+.depth-2 .rich-editor {
+    background: var(--line-grey);
+}
+
+.rich-editor {
     font-size: 14px;
     line-height: 1.8;
     letter-spacing: 1px;
@@ -1074,6 +1099,12 @@ textarea {
     height: 120px;
     background: var(--bg-grey);
     color: var(--black-light);
+    resize: none;
+}
+
+.rich-editor img.biaoqing {
+    height: 1.7em;
+    vertical-align: middle;
 }
 
 /**评论提交**/
@@ -1245,15 +1276,15 @@ li .respond {
     color: var(--white);
 }
 
-/**视觉默认隐藏回复按钮**/
 .comment-reply a {
-    color: var(--bg-white);
+    color: var(--dark-grey);
     transition: 0.4s all ease;
-    font-weight: bold;
+    margin-left: 5px;
 }
 
 .comment-reply a:hover {
      color: var(--black);
+     font-weight: bold;
 }
 
 .cancel-comment-reply {
@@ -1268,14 +1299,17 @@ li .respond {
     border-radius: 2px;
 }
 
+#reply-title {
+    display: flex;
+    align-items: center;
+}
+
 .user .date {
     font-size: 12px;
-    font-weight: 100;
     color: var(--dark-grey);
 }
 
 .comment-list li {
-    padding: 20px 0;
     -webkit-animation-fill-mode: initial;
     animation-fill-mode: initial;
     border-bottom: 1px solid var(--line-grey);
@@ -1298,28 +1332,54 @@ li .respond {
     height: 26px;
 }
 
-/**子级评论列表**/
-li.comment-child {
+/**子级评论列表 修复后**/
+/* 顶级评论不缩进 */
+#comments li.depth-1 {
+    padding: 20px 0;
+}
+
+/* 只缩进子评论（depth-2） */
+#comments li.depth-2 {
     margin-left: 50px;
-    padding: 15px 10px 10px;
+    padding: 10px 15px 0;
+}
+
+#comments li.depth-2:first-child {
+    margin-top: 15px;
+}
+
+/* 孙评论及以上层级不缩进 */
+#comments li.depth-3,
+#comments li.depth-4,
+#comments li.depth-5 {
+    margin-left: 0;
+    padding-left: 0;
+    border-left: none;
+}
+
+.comment-box-2,.comment-box-3,.comment-box-4,.comment-box-5 {
+    padding: 0 0 25px;
+}
+
+/* 确保评论回复按钮位置正确 */
+#comments .comment-reply {
+    position: static;
+    float: right;
+}
+
+.at-parent {
+    float: left;
+    margin-left: 50px;
+    margin-right: 5px;
+    color: #196cd7;
+    line-height: 2em;
+    font-size: 14px;
+    font-family: "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+}
+
+li.comment-child {
     border-bottom: var(--line-grey) 1px solid;
     background: var(--bg-grey);
-}
-
-li.comment-child:first-child {
-    margin-top:15px;
-    border-top-left-radius: 5px !important;
-    border-top-right-radius: 5px !important;
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
-}
-
-li.comment-child:last-child {
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
-    border-bottom-left-radius: 5px !important;
-    border-bottom-right-radius: 5px !important;
-    padding-bottom: 20px;
 }
 
 .commentLike {
@@ -2136,9 +2196,6 @@ pre code.hljs{display:block;overflow-x:auto;padding:1em}code.hljs{padding:3px 5p
 }
 
 /**护眼模式开关结束**/
-
-
-
 
 
 

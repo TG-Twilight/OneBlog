@@ -1,114 +1,196 @@
 /**
- * Updated: 2025-03-12
- * Author: ©彼岸临窗 oneblogx.com
+ * Updated: 2025-06-02
+ * Author: ©彼岸临窗 oneblog.net
  *
- * 注释含命名规范，开源不易，如需引用请注明来源:彼岸临窗 https://oneblogx.com。
+ * 注释含命名规范，开源不易，如需引用请注明来源:彼岸临窗 https://oneblog.net。
  * 本主题已取得软件著作权（登记号：2025SR0334142）和外观设计专利（专利号：第7121519号），请严格遵循GPL-2.0协议使用本主题。
  */
- 
 document.addEventListener('DOMContentLoaded', function() {
+    const richEditor = document.getElementById('rich-editor');
+    const textarea = document.getElementById('textarea');
     const emojiBtn = document.getElementById('emoji-btn');
     const emojiPicker = document.getElementById('emoji-picker');
-    const textarea = document.getElementById('textarea');
     const emojiContainer = document.querySelector('.emoji-container');
     const emojiCategories = document.querySelectorAll('.emoji-category');
-    // 如果页面上没有表情按钮，则直接退出，不执行后面的代码
-    if (!emojiBtn || !emojiPicker || !textarea || !emojiContainer || emojiCategories.length === 0) {
-          return;
+    const emojiBaseUrl = '/usr/themes/OneBlog/assets/img/emoji/';
+
+    // 保存最近一次在编辑器内的selection
+    let savedRange = null;
+
+    function saveSelection() {
+        const sel = window.getSelection();
+        if (!sel.rangeCount) return;
+        const range = sel.getRangeAt(0);
+        // 只保存在编辑器内的range
+        let node = range.commonAncestorContainer;
+        while (node) {
+            if (node === richEditor) {
+                savedRange = range.cloneRange();
+                return;
+            }
+            node = node.parentNode;
+        }
     }
-    let lastActiveCategory = 'emotion'; // 默认分类
+    function restoreSelection() {
+        if (savedRange) {
+            const sel = window.getSelection();
+            sel.removeAllRanges();
+            sel.addRange(savedRange);
+            richEditor.focus();
+        } else {
+            // 没有保存，直接移到末尾
+            moveCursorToEnd(richEditor);
+        }
+    }
+    function moveCursorToEnd(element) {
+        const range = document.createRange();
+        range.selectNodeContents(element);
+        range.collapse(false);
+        const sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+        element.focus();
+    }
+    // 只要编辑器有操作就保存selection
+    ['mouseup', 'keyup', 'selectionchange'].forEach(evt => {
+        document.addEventListener(evt, function() {
+            // 只在编辑器内操作时保存
+            if (document.activeElement === richEditor) {
+                saveSelection();
+            }
+        });
+    });
+    // 富文本输入时同步
+    richEditor.addEventListener('input', function() {
+        syncTextarea();
+    });
+    // 粘贴支持
+    richEditor.addEventListener('paste', function(e) {
+        e.preventDefault();
+        let text = (e.clipboardData || window.clipboardData).getData('text');
+        text = text.replace(/\[emoji:([a-zA-Z0-9_]+)\]/g, function(match, p1) {
+            return `<img class="biaoqing" src="${emojiBaseUrl}${p1}.svg" alt="[emoji:${p1}]" data-emoji="${p1}">`;
+        });
+        document.execCommand('insertHTML', false, text);
+        syncTextarea();
+    });
 
-    // 表情分类及其对应的表情图标和颜文字
-    const emojiData = {
-        emotion: [
-            '101.svg','102.svg','103.svg','104.svg','105.svg','106.svg','107.svg',
-            '108.svg','109.svg','110.svg','111.svg','112.svg','113.svg','114.svg',
-            '115.svg','116.svg','117.svg','118.svg','119.svg','120.svg','121.svg',
-            '122.svg','123.svg','124.svg','125.svg','126.svg','127.svg','128.svg',
-            '129.svg','130.svg','131.svg','132.svg','133.svg','134.svg',
-        ],
-        special: [
-            '201.svg','202.svg','203.svg','204.svg','205.svg','206.svg','207.svg',
-            '208.svg','209.svg','210.svg',
-        ],
-        kaomoji: [
-            '(✪ω✪)','(*^▽^*)','٩(๑❛ᴗ❛๑)۶',
-            '(๑´ㅂ`๑) ','(｡◕ˇ∀ˇ◕)','(◕ᴗ◕✿)',
-            '(๑¯∀¯๑)','(＾ω＾)','(★ᴗ★)',
-            '(*^__^*) ','(╯︵╰)','(T＿T)',
-            '╥﹏╥','(｡•́︿•̀｡)','>_<',
-            '(•ˇ‸ˇ•｡)','｡◕ᴗ◕｡','(´•༝•`)',
-        ]
-    };
+    // 插入表情
+    function insertEmojiImg(emojiName) {
+        restoreSelection();
+        let img = document.createElement('img');
+        img.src = emojiBaseUrl + emojiName + '.svg';
+        img.alt = `[emoji:${emojiName}]`;
+        img.className = 'biaoqing';
+        img.setAttribute('data-emoji', emojiName);
 
-    // 加载表情图标或颜文字
+        insertNodeAtCursor(img);
+        // 光标放到表情后
+        placeCaretAfterNode(img);
+        syncTextarea();
+        // 重新保存selection
+        saveSelection();
+    }
+    function insertNodeAtCursor(node) {
+        const sel = window.getSelection();
+        if (sel.rangeCount > 0) {
+            let range = sel.getRangeAt(0);
+            range.deleteContents();
+            range.insertNode(node);
+        } else {
+            richEditor.appendChild(node);
+        }
+    }
+    function placeCaretAfterNode(node) {
+        const range = document.createRange();
+        range.setStartAfter(node);
+        range.collapse(true);
+        const sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+        richEditor.focus();
+    }
     function loadEmojis(category) {
-        emojiContainer.innerHTML = ''; // 清空当前的表情图标或颜文字
+        emojiContainer.innerHTML = '';
+        const emojiData = {
+            emotion: [
+                '101','102','103','104','105','106','107',
+                '108','109','110','111','112','113','114',
+                '115','116','117','118','119','120','121',
+                '122','123','124','125','126','127','128',
+                '129','130','131','132','133','134',
+            ],
+            special: [
+                '201','202','203','204','205','206','207',
+                '208','209','210',
+            ],
+            kaomoji: [
+                '(✪ω✪)','(*^▽^*)','٩(๑❛ᴗ❛๑)۶',
+                '(๑´ㅂ`๑) ','(｡◕ˇ∀ˇ◕)','(◕ᴗ◕✿)',
+                '(๑¯∀¯๑)','(＾ω＾)','(★ᴗ★)',
+                '(*^__^*) ','(╯︵╰)','(T＿T)',
+                '╥﹏╥','(｡•́︿•̀｡)','>_<',
+                '(•ˇ‸ˇ•｡)','｡◕ᴗ◕｡','(´•༝•`)',
+            ]
+        };
         const emojis = emojiData[category];
         emojis.forEach(emoji => {
-            if (category === 'kaomoji') {
+            if(category === 'kaomoji') {
                 const span = document.createElement('span');
                 span.textContent = emoji;
                 span.className = 'kaomoji';
                 emojiContainer.appendChild(span);
                 span.addEventListener('click', () => {
-                    insertAtCaret(textarea, emoji);
+                    restoreSelection();
+                    insertNodeAtCursor(document.createTextNode(emoji));
+                    syncTextarea();
+                    saveSelection();
                     emojiPicker.style.display = 'none';
-                    clearActiveClass(); // 清除active类
                 });
             } else {
                 const img = document.createElement('img');
-                img.src = `/usr/themes/OneBlog/assets/img/emoji/${emoji}`;
-                img.alt = emoji;
+                img.src = emojiBaseUrl + emoji + '.svg';
+                img.alt = `[emoji:${emoji}]`;
+                img.setAttribute('data-emoji', emoji);
                 emojiContainer.appendChild(img);
                 img.addEventListener('click', () => {
-                    const emojiName = emoji.replace('.svg', '');
-                    const shortcode = `[emoji:${emojiName}]`;
-                    insertAtCaret(textarea, shortcode);
+                    insertEmojiImg(emoji);
                     emojiPicker.style.display = 'none';
-                    clearActiveClass(); // 清除active类
                 });
             }
         });
     }
-
-    // 显示或隐藏表情选择器
-    emojiBtn.addEventListener('click', () => {
+    // emoji按钮，只负责弹窗
+    let lastActiveCategory = 'emotion';
+    emojiBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
         if (emojiPicker.style.display === 'none') {
             emojiPicker.style.display = 'block';
-            loadEmojis(lastActiveCategory); // 加载上次选择的分类的表情图标或颜文字
-            setActiveClass(lastActiveCategory); // 恢复上次选择的active类
+            loadEmojis(lastActiveCategory);
+            setActiveClass(lastActiveCategory);
         } else {
             emojiPicker.style.display = 'none';
-            clearActiveClass(); // 清除active类
+            clearActiveClass();
         }
     });
-
-    // 切换表情分类
     emojiCategories.forEach(button => {
         button.addEventListener('click', (event) => {
-            event.preventDefault(); // 阻止表单提交
+            event.preventDefault();
             const category = button.getAttribute('data-category');
-            lastActiveCategory = category; // 更新上次选择的分类
+            lastActiveCategory = category;
             loadEmojis(category);
             setActiveClass(category);
         });
     });
-
-    // 点击页面其他位置时隐藏表情选择器
     document.addEventListener('click', (event) => {
         if (!emojiPicker.contains(event.target) && event.target !== emojiBtn) {
             emojiPicker.style.display = 'none';
-            clearActiveClass(); // 清除active类
+            clearActiveClass();
         }
     });
-
-    // 清除所有active类
     function clearActiveClass() {
         emojiCategories.forEach(btn => btn.classList.remove('active'));
     }
-
-    // 设置active类
     function setActiveClass(category) {
         emojiCategories.forEach(button => {
             if (button.getAttribute('data-category') === category) {
@@ -118,28 +200,23 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
-
-    // 在光标位置插入短代码或颜文字
-    function insertAtCaret(textarea, text) {
-        if (document.selection) {
-            // IE
-            textarea.focus();
-            const sel = document.selection.createRange();
-            sel.text = text;
-            textarea.focus();
-        } else if (textarea.selectionStart || textarea.selectionStart === 0) {
-            // 其他浏览器
-            const startPos = textarea.selectionStart;
-            const endPos = textarea.selectionEnd;
-            const scrollTop = textarea.scrollTop;
-            textarea.value = textarea.value.substring(0, startPos) + text + textarea.value.substring(endPos, textarea.value.length);
-            textarea.focus();
-            textarea.selectionStart = startPos + text.length;
-            textarea.selectionEnd = startPos + text.length;
-            textarea.scrollTop = scrollTop;
-        } else {
-            textarea.value += text;
-            textarea.focus();
-        }
+    function htmlToShortcode(html) {
+        html = html.replace(/<div>|<br\s*\/?>/gi, '\n');
+        html = html.replace(/<img[^>]*data-emoji="([a-zA-Z0-9_]+)"[^>]*>/gi, function(_, emoji) {
+            return `[emoji:${emoji}]`;
+        });
+        let tmp = document.createElement('div');
+        tmp.innerHTML = html;
+        return tmp.textContent || tmp.innerText || '';
+    }
+    function syncTextarea() {
+        textarea.value = htmlToShortcode(richEditor.innerHTML);
+    }
+    syncTextarea();
+    const commentForm = document.getElementById('comment-form');
+    if(commentForm){
+        commentForm.addEventListener('submit', function() {
+            syncTextarea();
+        });
     }
 });

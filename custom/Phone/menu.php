@@ -13,7 +13,7 @@
             夜间模式<input type="checkbox" id="oneblog-protect"><label for="oneblog-protect" class="switchBtn"></label>
         </div>
         <span>©<?php if (!empty($this->options->Webtime)): echo $this->options->Webtime().'-'; ?><?php endif; ?><?php echo date('Y'); ?>&nbsp;&nbsp;<a href="<?php echo $this->options->siteUrl; ?>"><?php echo $this->options->title; ?></a></span>
-        <span>Designed by <a id="author-info" href="https://oneblogx.com" title="主题" target="_blank">OneBlog</a></span>
+        <span>Designed by <a id="author-info" href="https://oneblog.net" title="主题" target="_blank">OneBlog</a></span>
     </div>
 </div>
 

@@ -3,7 +3,7 @@
         <?php if ($menu = parseCustomMenu()): ?>
         <?php echo $menu['noIcon']; ?>
         <!--自定义-->
-        <a href="https://oneblogx.com/oneblog" target="_blank">主题</a>
+        <a href="https://oneblog.net/oneblog" target="_blank">主题</a>
         <?php endif; ?>
     </div>
     <div class="copyright">
@@ -14,7 +14,7 @@
             <?php if (!empty($this->options->ICP)): ?>
                 <a href="https://beian.miit.gov.cn/" target="_blank" rel="nofollow noreferrer"><?php $this->options->ICP(); ?></a><br>
             <?php endif; ?>
-            Designed by <a id="author-info" href="https://oneblogx.com" title="自豪地使用OneBlog主题" target="_blank">OneBlog</a> V<?php echo parseThemeVersion();?>         
+            Designed by <a id="author-info" href="https://oneblog.net" title="自豪地使用OneBlog主题" target="_blank">OneBlog</a> V<?php echo parseThemeVersion();?>         
             <div class="switch">
                 <span>护眼模式</span><input type="checkbox" id="oneblog-protect"><label for="oneblog-protect" class="switchBtn"></label>
             </div>
@@ -74,7 +74,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 <?php endif;?>
 
-<script src="<?php $this->options->themeUrl('/assets/js/oneblog.js?v=3.5.2'); ?>"></script><!--主题js-->
+<script src="<?php $this->options->themeUrl('/assets/js/oneblog.js?v=3.5.3'); ?>"></script><!--主题js-->
 
 
 <?php $Unsplash = $this->options->Unsplash; if ($this->is('category', 'photos') && $Unsplash == 'on'): ?>

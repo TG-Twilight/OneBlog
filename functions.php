@@ -1,9 +1,9 @@
 <?php if (!defined('__TYPECHO_ROOT_DIR__')) exit;
 /**
  * Theme：OneBlog
- * Author: ©彼岸临窗 oneblogx.com
+ * Author: ©彼岸临窗 oneblog.net
  *
- * 注释含命名规范，开源不易，如需引用请注明来源:彼岸临窗 https://oneblogx.com。
+ * 注释含命名规范，开源不易，如需引用请注明来源:彼岸临窗 https://oneblog.net。
  * 本主题已取得软件著作权（登记号：2025SR0334142）和外观设计专利（专利号：第7121519号），请严格遵循GPL-2.0协议使用本主题。
  * 
  **/
@@ -18,6 +18,12 @@ function parseThemeVersion() {
 
 //主题设置自定义
 function themeConfig($form) {?>
+    <script>
+    document.addEventListener('DOMContentLoaded', function(){
+      var inp = document.querySelector('input[name="themeColor"]');
+      if(inp) inp.type = "color";
+    });
+    </script>
     <link rel="stylesheet" href="<?php echo Helper::options()->themeUrl('assets/css/theme.css'); ?>" type="text/css" />
     <script src="<?php echo Helper::options()->themeUrl('assets/js/theme.js'); ?>" type="text/javascript"></script>
     <div class="OneBlog"><h3>OneBlog 主题设置</h3></div>
@@ -27,7 +33,7 @@ function themeConfig($form) {?>
             <div id="tab1" class="tab-pane active">
                 <h2>OneBlog V<?php echo parseThemeVersion();?></h2>
                 <p>本主题精心打磨多年，且持续优化，现免费开源，致敬互联网社区开源精神，也致敬热爱生活和记录的我们。</p>
-                <p>主题安装教程请前往<b></b>主题文档</b>：<a href="https://docs.oneblogx.com" target="_blank">docs.oneblogx.com</a> 获取，</a>主题最新版本请前往Github仓库：<a href="https://github.com/LawyerLu/OneBlog" target="_blank">OneBlog</a> 或 <a href="https://gitcode.com/LawyerLu/OneBlog" target="_blank">国内镜像仓库</a>查看，记得★Star，既是对作者的支持，也方便记住来时的路。</p>
+                <p>主题安装教程请前往<b></b>主题文档</b>：<a href="https://docs.oneblog.net" target="_blank">docs.oneblog.net</a> 获取，</a>主题最新版本请前往Github仓库：<a href="https://github.com/LawyerLu/OneBlog" target="_blank">OneBlog</a> 或 <a href="https://gitcode.com/gh_mirrors/one/OneBlog" target="_blank">国内镜像仓库</a>查看，记得★Star，既是对作者的支持，也方便记住来时的路。</p>
                 <p>本主题仅有微信交流群，其他均不是官方群组。如需加群，请通过官方仓库获取最新群二维码。</p>
                 <p>如二维码已过期，请通过微信公众号&nbsp;<b>彼岸临窗</b>&nbsp;私信获取或添加作者微信号：&nbsp;<b>oneblogx</b>&nbsp;。</p>
                 <p>主题图标库（可直接引用，如 "iconfont icon-home"）：</p>
@@ -108,7 +114,7 @@ function themeConfig($form) {?>
     //—————————————————————————————————————— 高级设置 ——————————————————————————————————————
     
     // 添加自定义 DNS 预解析域名字段
-    $dnsPrefetch = new Typecho_Widget_Helper_Form_Element_Textarea('dnsPrefetch',NULL,NULL,_t('DNS预解析域名'),_t('请输入需要预解析的域名，每行一个。例如：<br>https://oneblogx.com<br>https://cdn.oneblogx.com')
+    $dnsPrefetch = new Typecho_Widget_Helper_Form_Element_Textarea('dnsPrefetch',NULL,NULL,_t('DNS预解析域名'),_t('请输入需要预解析的域名，每行一个。例如：<br>https://oneblog.net<br>https://cdn.oneblog.net')
     );
     $form->addInput($dnsPrefetch);
     
@@ -165,6 +171,17 @@ function themeConfig($form) {?>
     
     $Github = new Typecho_Widget_Helper_Form_Element_Text('Github', NULL, NULL, _t('Github'), _t('请填写Github地址。'));
     $form->addInput($Github);
+    
+    //—————————————————————————————————————— 自定义样式 ——————————————————————————————————————
+    // 自定义CSS
+    $DIYcss = new Typecho_Widget_Helper_Form_Element_Textarea('DIYcss',NULL,NULL,_t('自定义CSS'),_t('可以填写css，覆盖默认的样式，本css优先级最高。')
+    );
+    $form->addInput($DIYcss);
+    
+
+    $themeColor = new Typecho_Widget_Helper_Form_Element_Text('themeColor',NULL,'#ff5050',_t('主题色'),_t('请选择主色调，后续版本将支持更多自定义。')
+    );
+    $form->addInput($themeColor);
  
 }
  
@@ -595,14 +612,14 @@ function commentLikes($archive){
 
 //表情短代码解析
 function parseEmojis($content) {
-    //使用绝对地址保证邮件通知中也能解析
+    // null、false等都转为空字符串，防止报错
+    $content = (string)$content;
     $emojiPath = Helper::options()->siteUrl.'usr/themes/OneBlog/assets/img/emoji/';
     return preg_replace_callback('/\[emoji:([a-zA-Z0-9_]+)\]/', function($matches) use ($emojiPath) {
         $emojiName = $matches[1];
         return '<img class="biaoqing" src="' . $emojiPath . $emojiName . '.svg" alt="' . $emojiName . '">';
     }, $content);
 }
-
 //文章内图片标签自动解析为灯箱效果
 function AutoLightbox($content) {
     if (empty($content)) {return $content;}
@@ -629,3 +646,29 @@ function redirect_404(){
 }
 // 在页面加载之前调用
 Typecho_Plugin::factory('Widget_Archive')->beforeRender = 'redirect_404';
+
+
+// 评论输入内容的安全验证
+function filter_comment($content) {
+    // 避免传入null
+    if (!is_string($content)) {
+        $content = strval($content);
+    }
+    // 保留合法的 [emoji:xxx] 短码
+    $content = preg_replace_callback(
+        '/(\[emoji:([a-zA-Z0-9_]+)\])/',
+        function($m) {
+            return $m[0];
+        },
+        $content
+    );
+    // 去除其它所有html标签
+    $content = strip_tags($content);
+    return $content;
+}
+
+function my_comment_filter($comment, $post, $result) {
+    $comment['text'] = filter_comment($comment['text']);
+    return $comment;
+}
+Typecho_Plugin::factory('Widget_Feedback')->filter = 'my_comment_filter';

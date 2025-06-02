@@ -18,7 +18,7 @@
     <div class="links padding">
         <?php Links_Plugin::output("
 			<li class='link'>
-				<a href='{url}' target='_blank' rel='nofollow'>
+				<a href='{url}' target='_blank'>
 				    <img src='{image}' alt='{name}'/>
 				    <div class='link-info'>
 				        <h3>{name}</h3>
