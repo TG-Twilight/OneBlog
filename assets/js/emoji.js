@@ -6,6 +6,8 @@
  * 本主题已取得软件著作权（登记号：2025SR0334142）和外观设计专利（专利号：第7121519号），请严格遵循GPL-2.0协议使用本主题。
  */
 document.addEventListener('DOMContentLoaded', function() {
+    var emojiBox = document.querySelector('.icon-emoji');
+    if (!emojiBox) return; // 如果当前页面不存在表情按钮，则不执行该JS
     const richEditor = document.getElementById('rich-editor');
     const textarea = document.getElementById('textarea');
     const emojiBtn = document.getElementById('emoji-btn');

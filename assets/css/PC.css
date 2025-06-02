@@ -1001,9 +1001,31 @@ input:-webkit-autofill:active {
 }
 /**登录弹框结束**/
 
+textarea {
+    font-size: 14px;
+    line-height: 1.8;
+    letter-spacing: 1px;
+    width: 100%;
+    padding: 20px;
+    border: none;
+    border-radius: 2px;
+    outline: none;
+    margin-bottom: 10px;
+    height: 120px;
+    background: var(--bg-grey);
+    color: var(--black-light);
+    resize: none;
+}
+
+
+
 /**微语列表**/
 .memos {
     padding: 40px 60px 10px;
+}
+
+.memos li {
+    padding: 20px 0;
 }
 
 /**评论列表区域通用**/

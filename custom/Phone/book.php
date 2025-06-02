@@ -1,5 +1,5 @@
 <!--书单详情页-->
-<?php $this->need('custom/Phone/header.php');?>	
+<?php $this->need('custom/Phone/header.php');?> 
 <?php $this->need('custom/Phone/menu.php');?>
 <style>
 .book-bg:before {
@@ -37,7 +37,10 @@
                     <div id="<?php $this->respondId(); ?>" class="respond">
                         <h3 class="oneblog" id="response"><?php _e('<i class="iconfont icon-memos"></i>读书笔记'); ?></h3>
                         <form method="post" action="<?php $this->commentUrl() ?>" id="comment-form" role="form">
-                            <textarea placeholder="记录书中的句子或此刻的想法..." name="text" id="textarea" required ><?php $this->remember('text'); ?></textarea>
+                            <!-- 隐藏的textarea，实际提交用 -->
+                            <textarea name="text" id="textarea" style="display:none;" required></textarea>
+                            <!-- 可编辑div，表情预览和输入都在这里 -->
+                            <div id="rich-editor" contenteditable="true" class="rich-editor"></div>
                             <div class="comment-submit">
                                 <div class="emoji" title="添加表情">
                                     <i id="emoji-btn" class="iconfont icon-emoji"></i>
@@ -98,4 +101,4 @@
     </div>
 </div>
 
-<?php $this->need('custom/Phone/footer.php');?>	
+<?php $this->need('custom/Phone/footer.php');?> 

@@ -1625,7 +1625,6 @@ li.comment-child:last-child {
 /**书单全部结束**/
 
 /**微语页面**/
-/**微语页面**/
 .memos-btn {
     z-index: 1;
 }
@@ -1737,10 +1736,29 @@ input:-webkit-autofill:active {
     color: var(--bg-white);
 }
 /**登录弹框结束**/
+textarea {
+    font-size: 14px;
+    line-height: 1.6;
+    letter-spacing: 1px;
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 2px;
+    outline: none;
+    height: 90px;
+    background: var(--bg-grey);
+    color: var(--black-light);
+    resize: none;
+}
+
 
 /**微语列表**/
 .memos {
     padding: 0 30px 20px;
+}
+
+.memos li {
+    padding: 20px 0;
 }
 
 /**微语页面结束**/
