@@ -1,8 +1,9 @@
 <div class="footer">
     <div class="navigation"><!--底部菜单导航-->
         <?php if ($menu = parseCustomMenu()): ?>
-        <?php echo $menu['noIcon']; ?>
-        <!--自定义-->
+            <?php echo $menu['noIcon']; ?>
+            <!--自定义-->
+        <?php endif; ?>
     </div>
     <div class="copyright">
         Copyright&copy;<?php if (!empty($this->options->Webtime)): echo $this->options->Webtime().'-'; ?><?php endif; ?><?php echo date('Y'); ?>&nbsp;&nbsp;All Rights Reserved.&nbsp;&nbsp;Load：<?php echo timer_stop();?><br>
