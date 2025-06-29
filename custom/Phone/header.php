@@ -18,14 +18,14 @@ foreach ($domains as $domain): ?>
 <?php endif; ?>
 <title>
 <?php if ($this->is('index')): ?>
-<?php $this->options->title(); ?>
+<?php $this->options->title(); ?><?php if (!empty($this->options->slogan)): ?> - <?php $this->options->slogan(); ?><?php endif; ?>
 <?php else: ?>
 <?php $this->archiveTitle([
-            'category' => _t('%s'),
-            'search'   => _t('包含关键字 %s 的文章'),
-            'tag'      => _t('标签 %s 下的文章'),
-            'author'   => _t('%s 发布的文章')
-        ], '', ' - '); ?><?php $this->options->title(); ?>
+    'category' => _t('%s'),
+    'search'   => _t('包含关键字 %s 的文章'),
+    'tag'      => _t('标签 %s 下的文章'),
+    'author'   => _t('%s 发布的文章')
+], '', ' - '); ?><?php $this->options->title(); ?>
 <?php endif; ?>
 </title>
 <link href="<?php $this->options->themeUrl('/assets/sdk/animate.compat.css'); ?>" rel="stylesheet"><!--动画效果-->
@@ -50,6 +50,7 @@ $Webthumb = $this->options->Webthumb ? $this->options->Webthumb : Helper::option
 <meta name="image" content="<?php echo $Webthumb; ?>">
 <link rel="apple-touch-icon-precomposed" href="<?php echo $Webthumb; ?>">
 <meta name="msapplication-TileImage" content="<?php echo $Webthumb; ?>">
+<!--文章详情页-->
 <?php elseif ($this->is('post')):
 $thumb = showThumbnail($this);?>
 <meta property="og:description" content="<?php echo $this->excerpt(80,'...'); ?>" />
@@ -57,6 +58,7 @@ $thumb = showThumbnail($this);?>
 <meta name="image" content="<?php echo $thumb; ?>">
 <link rel="apple-touch-icon-precomposed" href="<?php echo $thumb; ?>">
 <meta name="msapplication-TileImage" content="<?php echo $thumb; ?>">
+<!--其他页面-->
 <?php else:?>
 <meta property="og:image" content="<?php echo $Webthumb; ?>" />
 <meta property="og:image:type" content="image/webp">
@@ -79,20 +81,3 @@ var bannerSwitch = "<?php echo $this->options->switch; ?>";
 <?php $this->header();?>
 </head>
 <body>
-<!-- 护眼模式按钮插入到搜索按钮左边 -->
-<div class="header">
-    <div class="logo">
-        <a id="logo" title="秋风塬上" alt="秋风塬上" href="https://awads.cc/" style="background-image:url('')"></a>
-    </div>
-    <div style="display: flex; align-items: center;">
-        <div class="switch" style="margin-right: 8px; display: flex; align-items: center;">
-            <span style="font-size: 0.95em;">护眼模式</span>
-            <input type="checkbox" id="oneblog-protect">
-            <label for="oneblog-protect" class="switchBtn"></label>
-        </div>
-        <form autocomplete="off" id="search" method="post" action="https://awads.cc/" role="search" class="search">
-            <input id="search-input" title="站内搜索" type="text" name="s" class="input" placeholder="输入关键字搜索" required />
-            <button type="submit" class="search-icon"><i class="iconfont icon-search"></i></button>
-        </form>
-    </div>
-</div>
