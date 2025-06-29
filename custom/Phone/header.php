@@ -18,6 +18,7 @@ foreach ($domains as $domain): ?>
 <?php endif; ?>
 <title>
 <?php if ($this->is('index')): ?>
+<?php $this->options->title(); ?>
 <?php else: ?>
 <?php $this->archiveTitle([
             'category' => _t('%s'),
@@ -49,7 +50,6 @@ $Webthumb = $this->options->Webthumb ? $this->options->Webthumb : Helper::option
 <meta name="image" content="<?php echo $Webthumb; ?>">
 <link rel="apple-touch-icon-precomposed" href="<?php echo $Webthumb; ?>">
 <meta name="msapplication-TileImage" content="<?php echo $Webthumb; ?>">
-<!--文章详情页-->
 <?php elseif ($this->is('post')):
 $thumb = showThumbnail($this);?>
 <meta property="og:description" content="<?php echo $this->excerpt(80,'...'); ?>" />
@@ -57,7 +57,6 @@ $thumb = showThumbnail($this);?>
 <meta name="image" content="<?php echo $thumb; ?>">
 <link rel="apple-touch-icon-precomposed" href="<?php echo $thumb; ?>">
 <meta name="msapplication-TileImage" content="<?php echo $thumb; ?>">
-<!--其他页面-->
 <?php else:?>
 <meta property="og:image" content="<?php echo $Webthumb; ?>" />
 <meta property="og:image:type" content="image/webp">
@@ -65,7 +64,6 @@ $thumb = showThumbnail($this);?>
 <link rel="apple-touch-icon-precomposed" href="<?php echo $Webthumb; ?>">
 <meta name="msapplication-TileImage" content="<?php echo $Webthumb; ?>">
 <?php endif;?>
-
 
 <script>
 var logoUrl = "<?php echo $this->options->logo ? $this->options->logo : Helper::options()->themeUrl . '/assets/default/logo.svg'; ?>";
