@@ -18,7 +18,6 @@ foreach ($domains as $domain): ?>
 <?php endif; ?>
 <title>
 <?php if ($this->is('index')): ?>
-<?php $this->options->title(); ?> - <?php echo !empty($this->options->slogan) ? $this->options->slogan() : '自豪地使用OneBlog主题'; ?>
 <?php else: ?>
 <?php $this->archiveTitle([
             'category' => _t('%s'),
