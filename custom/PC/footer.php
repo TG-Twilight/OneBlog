@@ -3,8 +3,6 @@
         <?php if ($menu = parseCustomMenu()): ?>
         <?php echo $menu['noIcon']; ?>
         <!--自定义-->
-        <a href="https://oneblog.net/oneblog" target="_blank">主题</a>
-        <?php endif; ?>
     </div>
     <div class="copyright">
         Copyright&copy;<?php if (!empty($this->options->Webtime)): echo $this->options->Webtime().'-'; ?><?php endif; ?><?php echo date('Y'); ?>&nbsp;&nbsp;All Rights Reserved.&nbsp;&nbsp;Load：<?php echo timer_stop();?><br>
@@ -14,10 +12,6 @@
             <?php if (!empty($this->options->ICP)): ?>
                 <a href="https://beian.miit.gov.cn/" target="_blank" rel="nofollow noreferrer"><?php $this->options->ICP(); ?></a><br>
             <?php endif; ?>
-            Designed by <a id="author-info" href="https://oneblog.net" title="自豪地使用OneBlog主题" target="_blank">OneBlog</a> V<?php echo parseThemeVersion();?>         
-            <div class="switch">
-                <span>护眼模式</span><input type="checkbox" id="oneblog-protect"><label for="oneblog-protect" class="switchBtn"></label>
-            </div>
     </div>
     <div class="contact">
         <?php if (!empty($this->options->Xiaohongshu)): ?>
