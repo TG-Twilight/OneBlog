@@ -81,3 +81,20 @@ var bannerSwitch = "<?php echo $this->options->switch; ?>";
 <?php $this->header();?>
 </head>
 <body>
+<!-- 护眼模式按钮插入到搜索按钮左边 -->
+<div class="header">
+    <div class="logo">
+        <a id="logo" title="秋风塬上" alt="秋风塬上" href="https://awads.cc/" style="background-image:url('')"></a>
+    </div>
+    <div style="display: flex; align-items: center;">
+        <div class="switch" style="margin-right: 8px; display: flex; align-items: center;">
+            <span style="font-size: 0.95em;">护眼模式</span>
+            <input type="checkbox" id="oneblog-protect">
+            <label for="oneblog-protect" class="switchBtn"></label>
+        </div>
+        <form autocomplete="off" id="search" method="post" action="https://awads.cc/" role="search" class="search">
+            <input id="search-input" title="站内搜索" type="text" name="s" class="input" placeholder="输入关键字搜索" required />
+            <button type="submit" class="search-icon"><i class="iconfont icon-search"></i></button>
+        </form>
+    </div>
+</div>
