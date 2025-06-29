@@ -1,54 +1,95 @@
-<?php $this->footer();?>
-<script src="<?php $this->options->themeUrl('/assets/sdk/jquery.min.js'); ?>"></script>
-<script src="<?php $this->options->themeUrl('/assets/sdk/layer/layer.js'); ?>"></script>
-<script src="<?php $this->options->themeUrl('/assets/sdk/fancybox3/jquery.fancybox.min.js'); ?>"></script>
-
-<?php if ($this->is('post') || $this->is('page')): ?>
-    <!--评论无限加载-->
-    <script src="<?php $this->options->themeUrl('/assets/js/comments.js'); ?>"></script>
-    <!--表情支持-->
-    <script src="<?php $this->options->themeUrl('/assets/js/emoji.js'); ?>"></script>
-    <?php if ($this->options->BeCode == 'on'):?>
-        <!--代码高亮逻辑-->
-        <script src="<?php $this->options->themeUrl('/assets/sdk/highlightjs/highlight.min.js'); ?>"></script>
-        <script defer>
-        document.addEventListener('DOMContentLoaded', function () {
-            const codeBlocks = document.querySelectorAll('pre code');
-            const observer = new IntersectionObserver(function (entries) {
-                entries.forEach(function (entry) {
-                    if (entry.isIntersecting) {
-                        hljs.highlightElement(entry.target);
-                        observer.unobserve(entry.target); 
-                    }
-                });
-            }, {
-                rootMargin: '0px',
-                threshold: 0.1 // 当代码块进入视口 10% 时触发，减少资源占用
-            });
-
-            codeBlocks.forEach(function (codeBlock) {
-                observer.observe(codeBlock); 
-                codeBlock.style.filter = 'none'; // 显示高亮后的代码块
-            });
-        });
-        </script>
-    <?php endif;?>
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0, width=device-width"/>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rel="dns-prefetch" href="https://at.alicdn.com">
+<link rel="dns-prefetch" href="https://weavatar.com">
+<link rel="dns-prefetch" href="https://images.unsplash.com">
+<?php if (!empty($this->options->dnsPrefetch)):
+$domains = array_filter(array_map('trim', explode("\n", $this->options->dnsPrefetch)));
+foreach ($domains as $domain): ?>
+<link rel="dns-prefetch" href="<?php echo $domain; ?>">
+<?php endforeach; ?>
+<?php endif; ?>
+<?php if (!empty($this->options->Favicon)):?>
+<link rel="shortcut icon" href="<?php echo $this->options->Favicon; ?>" type="image/x-icon" />
+<?php endif; ?>
+<title>
+<?php if ($this->is('index')): ?>
+<?php $this->options->title(); ?><?php if (!empty($this->options->slogan)): ?> - <?php $this->options->slogan(); ?><?php endif; ?>
+<?php else: ?>
+<?php $this->archiveTitle([
+            'category' => _t('%s'),
+            'search'   => _t('包含关键字 %s 的文章'),
+            'tag'      => _t('标签 %s 下的文章'),
+            'author'   => _t('%s 发布的文章')
+        ], '', ' - '); ?><?php $this->options->title(); ?>
+<?php endif; ?>
+</title>
+<link href="<?php $this->options->themeUrl('/assets/sdk/animate.compat.css'); ?>" rel="stylesheet"><!--动画效果-->
+<link href="//at.alicdn.com/t/c/font_3940454_u9s3lgsdiq.css" rel="stylesheet"/><!---图标库 iconfont.cn -->
+<link rel="stylesheet" href="<?php $this->options->themeUrl('/assets/sdk/fancybox3/jquery.fancybox.min.css'); ?>" /><!--灯箱效果-->
+<link href="<?php $this->options->themeUrl('/assets/css/PC.css?v=3.5.3'); ?>" rel="stylesheet"/><!--主题核心样式-->
+<style>
+:root {
+    --theme-color: <?php $color = $this->options->themeColor;echo $color ? $color : '#ff5050';?>;
+}
+<?php echo $this->options->DIYcss;?>
+</style>
+<!--各页面OG信息及SEO优化-->
+<?php $NoPostIMG = $this->options->NoPostIMG ? $this->options->NoPostIMG : Helper::options()->themeUrl . '/assets/default/bg.jpg';
+$Webthumb = $this->options->Webthumb ? $this->options->Webthumb : Helper::options()->themeUrl . '/assets/default/logo.png';
+?>
+<!--首页-->
+<?php if ($this->is('index')): ?>
+<meta property="og:description" content="<?php echo $this->options->description(); ?>" />
+<meta property="og:image" content="<?php echo $Webthumb; ?>" />
+<meta name="image" content="<?php echo $Webthumb; ?>">
+<link rel="apple-touch-icon-precomposed" href="<?php echo $Webthumb; ?>">
+<meta name="msapplication-TileImage" content="<?php echo $Webthumb; ?>">
+<!--文章详情页-->
+<?php elseif ($this->is('post')):
+$thumb = showThumbnail($this);?>
+<meta property="og:description" content="<?php echo $this->excerpt(80,'...'); ?>" />
+<meta property="og:image" content="<?php echo $thumb; ?>" />
+<meta name="image" content="<?php echo $thumb; ?>">
+<link rel="apple-touch-icon-precomposed" href="<?php echo $thumb; ?>">
+<meta name="msapplication-TileImage" content="<?php echo $thumb; ?>">
+<!--其他页面-->
+<?php else:?>
+<meta property="og:image" content="<?php echo $Webthumb; ?>" />
+<meta property="og:image:type" content="image/webp">
+<meta name="image" content="<?php echo $Webthumb; ?>">
+<link rel="apple-touch-icon-precomposed" href="<?php echo $Webthumb; ?>">
+<meta name="msapplication-TileImage" content="<?php echo $Webthumb; ?>">
 <?php endif;?>
-
-<?php if ($this->is('index')):?> 
-    <script src="<?php $this->options->themeUrl('/assets/sdk/swiper/swiper-bundle.min.js'); ?>"></script>
-<?php endif; ?>
-
-<?php $Unsplash = $this->options->Unsplash; if ($this->is('category', 'photos') && $Unsplash == 'on'): ?>
-    <script src="<?php $this->options->themeUrl('/assets/js/unsplash.js'); ?>"></script><!--更新照片-->
-<?php endif; ?>
-
-<script src="<?php $this->options->themeUrl('/assets/js/oneblog_m.js?v=3.5.3'); ?>"></script>
-
-<!--统计代码-->
-<?php if (!empty($this->options->Tongji)): ?>
-    <?php $this->options->Tongji();?>
-<?php endif; ?>
-
-</body>
-</html>
+<script>
+var logoUrl = "<?php echo $this->options->logo ? $this->options->logo : Helper::options()->themeUrl . '/assets/default/logo.svg'; ?>";
+var logoLightUrl = "<?php echo $this->options->logoLight ? $this->options->logoLight : Helper::options()->themeUrl . '/assets/default/logoLight.svg'; ?>";
+(function() {
+    var currentTheme = document.cookie.replace(/(?:(?:^|.*;\s*)eyeProtectMode\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+    if (currentTheme === 'dark') {
+        document.documentElement.classList.add('protect-eye');
+    }
+})();
+</script>
+<?php $this->header();?>
+</head>
+<body>
+<div class="header">
+    <div class="logo">
+        <a id="logo" title="秋风塬上" alt="秋风塬上" href="https://awads.cc/" style="background-image:url('')"></a>
+    </div>
+    <div style="display: flex; align-items: center;">
+        <div class="switch" style="margin-right: 8px; display: flex; align-items: center;">
+            <span style="font-size: 0.95em;">护眼模式</span>
+            <input type="checkbox" id="oneblog-protect">
+            <label for="oneblog-protect" class="switchBtn"></label>
+        </div>
+        <form autocomplete="off" id="search" method="post" action="https://awads.cc/" role="search" class="search">
+            <input id="search-input" title="站内搜索" type="text" name="s" class="input" placeholder="输入关键字搜索" required />
+            <button type="submit" class="search-icon"><i class="iconfont icon-search"></i></button>
+        </form>
+    </div>
+</div>
