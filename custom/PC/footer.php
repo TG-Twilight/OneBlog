@@ -1,8 +1,9 @@
 <div class="footer">
     <div class="navigation"><!--底部菜单导航-->
         <?php if ($menu = parseCustomMenu()): ?>
-            <?php echo $menu['noIcon']; ?>
-            <!--自定义-->
+        <?php echo $menu['noIcon']; ?>
+        <!--自定义-->
+        <a href="https://oneblog.net/oneblog" target="_blank">主题</a>
         <?php endif; ?>
     </div>
     <div class="copyright">
@@ -13,6 +14,10 @@
             <?php if (!empty($this->options->ICP)): ?>
                 <a href="https://beian.miit.gov.cn/" target="_blank" rel="nofollow noreferrer"><?php $this->options->ICP(); ?></a><br>
             <?php endif; ?>
+            V<?php echo parseThemeVersion();?>         
+            <div class="switch">
+                <span>护眼模式</span><input type="checkbox" id="oneblog-protect"><label for="oneblog-protect" class="switchBtn"></label>
+            </div>
     </div>
     <div class="contact">
         <?php if (!empty($this->options->Xiaohongshu)): ?>
