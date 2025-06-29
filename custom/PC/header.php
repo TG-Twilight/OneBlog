@@ -17,7 +17,7 @@ foreach ($domains as $domain): ?>
 <?php endif; ?>
 <title>
 <?php if ($this->is('index')): ?>
-<?php $this->options->title(); ?>
+<?php $this->options->title(); ?><?php if (!empty($this->options->slogan)): ?> - <?php $this->options->slogan(); ?><?php endif; ?>
 <?php else: ?>
 <?php $this->archiveTitle([
     'category' => _t('%s'),
